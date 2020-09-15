@@ -1,0 +1,28 @@
+{
+  "name": "andreag/epub",
+  "description": "Epub/html sanification",
+  "type": "project",
+  "require": {
+    "php": "^7.3",
+    "symfony/console": "^5.1",
+    "ext-simplexml": "*",
+    "ext-dom": "*",
+    "ext-tidy": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9"
+  },
+  "license": "GNU",
+  "authors": [
+    {
+      "name": "Andrea Gaspardo",
+      "email": "gaspardoandrea@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Andreag\\Epub\\": "classes/Andreag/Epub/"
+    }
+  },
+  "minimum-stability": "stable"
+}
