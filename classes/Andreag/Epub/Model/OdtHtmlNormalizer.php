@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright (C) 2020 Webformat S.r.l.
  * http://www.webformat.com
  *
@@ -38,7 +38,7 @@ class OdtHtmlNormalizer extends HtmlNormalizer
      *
      * @return int
      */
-    public function normalize()
+    public function normalize(): int
     {
         $doc = new DOMDocument();
         $doc->loadHTMLFile($this->inputFile);
@@ -55,7 +55,6 @@ class OdtHtmlNormalizer extends HtmlNormalizer
         $this->footnotes($html);
         $this->replaceItalic($html);
         $this->replaceBold($html);
-        $this->replaceLiDivs($html);
         $this->savePrettyPrint($html);
 
         return 0;
@@ -69,9 +68,13 @@ class OdtHtmlNormalizer extends HtmlNormalizer
      */
     private function updateTitle(SimpleXMLElement $html, string $basename)
     {
+        /** @noinspection PhpUndefinedFieldInspection */
         $html->head->title = preg_replace('|\..*|', '', $basename);
     }
 
+    /**
+     * @param SimpleXMLElement $html
+     */
     private function removeMeta(SimpleXMLElement $html)
     {
         $dom = dom_import_simplexml($html);
@@ -106,6 +109,9 @@ class OdtHtmlNormalizer extends HtmlNormalizer
         }
     }
 
+    /**
+     * @param SimpleXMLElement $html
+     */
     private function removeStyles(SimpleXMLElement $html)
     {
         $dom = dom_import_simplexml($html);
@@ -201,6 +207,9 @@ class OdtHtmlNormalizer extends HtmlNormalizer
         }
     }
 
+    /**
+     * @param SimpleXMLElement $html
+     */
     private function removeEmptyParagraphs(SimpleXMLElement $html)
     {
         $dom = dom_import_simplexml($html);
@@ -219,6 +228,9 @@ class OdtHtmlNormalizer extends HtmlNormalizer
         }
     }
 
+    /**
+     * @param SimpleXMLElement $html
+     */
     private function removeEmptyLinks(SimpleXMLElement $html)
     {
         $dom = dom_import_simplexml($html);
@@ -237,6 +249,9 @@ class OdtHtmlNormalizer extends HtmlNormalizer
         }
     }
 
+    /**
+     * @param SimpleXMLElement $html
+     */
     private function footnotes(SimpleXMLElement $html)
     {
         $dom = dom_import_simplexml($html);
@@ -275,10 +290,5 @@ class OdtHtmlNormalizer extends HtmlNormalizer
                 }
             }
         }
-    }
-
-    private function replaceLiDivs(SimpleXMLElement $html)
-    {
-
     }
 }

@@ -29,18 +29,18 @@ use tidy;
 class SimpleNormalizer
 {
     /** @var string */
-    private $inputFile;
+    private string $inputFile;
 
     /** @var string */
-    private $outputFile;
+    private string $outputFile;
 
     /**
      * SimpleNormalizer constructor.
      *
-     * @param $inputFile
-     * @param $outputFile
+     * @param string $inputFile
+     * @param string $outputFile
      */
-    public function __construct($inputFile, $outputFile)
+    public function __construct(string $inputFile, string $outputFile)
     {
         $this->inputFile = $inputFile;
         $this->outputFile = $outputFile;
@@ -73,6 +73,7 @@ class SimpleNormalizer
         $html = str_replace('<div><span>', '', $html);
         $html = str_replace("</span>\n</div>", '', $html);
 
+        /** @noinspection HtmlUnknownTag */
         $html = str_replace("<div>\n<span><div>", '', $html);
         $html = str_replace("</div></span>\n</div>", '', $html);
 

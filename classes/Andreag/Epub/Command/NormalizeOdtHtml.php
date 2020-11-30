@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright (C) 2020 Webformat S.r.l.
  * http://www.webformat.com
  *

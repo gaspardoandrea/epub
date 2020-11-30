@@ -19,8 +19,6 @@
 
 namespace Andreag\Epub\Model;
 
-use Symfony\Component\Console\Output\OutputInterface;
-
 /**
  * Class QuestionsNormalizer
  *
@@ -29,7 +27,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class QuestionsNormalizer
 {
     /** @var string */
-    private $inputFile;
+    private string $inputFile;
 
     /**
      * QuestionsNormalizer constructor.
@@ -46,7 +44,7 @@ class QuestionsNormalizer
      *
      * @return QuestionsNormalizer
      */
-    public static function fromInputFile(string $inputFile)
+    public static function fromInputFile(string $inputFile): QuestionsNormalizer
     {
         return new self($inputFile);
     }

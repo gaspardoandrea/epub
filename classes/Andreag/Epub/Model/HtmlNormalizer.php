@@ -1,6 +1,4 @@
-<?php /** @noinspection PhpUndefinedFieldInspection */
-
-/**
+<?php /*
  * Copyright (C) 2020 Webformat S.r.l.
  * http://www.webformat.com
  *
@@ -16,7 +14,23 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+ */ /*
+ * Copyright (C) 2020 Webformat S.r.l.
+ * http://www.webformat.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */ /** @noinspection PhpUndefinedFieldInspection */
 
 namespace Andreag\Epub\Model;
 
@@ -38,10 +52,10 @@ use function trim;
 class HtmlNormalizer
 {
     /** @var string */
-    protected $inputFile;
+    protected string $inputFile;
 
     /** @var string */
-    protected $outputFile;
+    protected string $outputFile;
 
     /**
      * HtmlNormalizer constructor.
@@ -73,7 +87,7 @@ class HtmlNormalizer
      *
      * @return int
      */
-    public function normalize()
+    public function normalize(): int
     {
         $html = simplexml_load_file($this->inputFile);
         $this->removeBaseFont($html);
@@ -83,6 +97,7 @@ class HtmlNormalizer
         $this->tableToH1($html);
         $this->simplifyH1Divs($html);
         $html = $this->simplifyDivs($html);
+        $html = $this->moveImgOutside($html);
         $html = $this->removeEmptyDiv($html);
         $html = $this->replaceItalic($html);
         $html = $this->replaceBold($html);
@@ -242,7 +257,7 @@ class HtmlNormalizer
      *
      * @return SimpleXMLElement
      */
-    private function removeEmptyDiv(SimpleXMLElement $html)
+    private function removeEmptyDiv(SimpleXMLElement $html): SimpleXMLElement
     {
         $dom = dom_import_simplexml($html);
         $divs = $dom->getElementsByTagName('div');
@@ -292,7 +307,20 @@ class HtmlNormalizer
      *
      * @return SimpleXMLElement
      */
-    private function specialChars(SimpleXMLElement $html)
+    private function specialChars(SimpleXMLElement $html): SimpleXMLElement
+    {
+        $dom = dom_import_simplexml($html);
+        $xpath = new DOMXPath($dom->ownerDocument);
+        $textNodes = $xpath->query('//text()');
+        foreach ($textNodes as $textNode) {
+            /** @var DOMText $textNode */
+            $textNode->textContent = str_replace('ù', '§', $textNode->textContent);
+        }
+
+        return simplexml_import_dom($dom);
+    }
+
+    private function moveImgOutside(SimpleXMLElement $html)
     {
         $dom = dom_import_simplexml($html);
         $xpath = new DOMXPath($dom->ownerDocument);
@@ -312,7 +340,7 @@ class HtmlNormalizer
      *
      * @return SimpleXMLElement
      */
-    protected function replaceItalic(SimpleXMLElement $html)
+    protected function replaceItalic(SimpleXMLElement $html): SimpleXMLElement
     {
         return $this->tagToEl('span', $html, 'font-style: italic;', 'em');
     }
@@ -324,7 +352,7 @@ class HtmlNormalizer
      *
      * @return SimpleXMLElement
      */
-    protected function replaceBold(SimpleXMLElement $html)
+    protected function replaceBold(SimpleXMLElement $html): SimpleXMLElement
     {
         $rv = $this->tagToEl('span', $html, 'font-weight: bold;', 'strong');
         $rv = $this->tagToEl('b', $rv, null, 'strong');
@@ -337,7 +365,7 @@ class HtmlNormalizer
      *
      * @return SimpleXMLElement
      */
-    private function replaceJustify(SimpleXMLElement $html)
+    private function replaceJustify(SimpleXMLElement $html): SimpleXMLElement
     {
         return $this->tagToEl('div', $html, 'text-align:justify;', 'p');
     }
