@@ -50,6 +50,7 @@ class OdtHtmlNormalizer extends HtmlNormalizer
         $this->removeStyles($html);
         $this->removeSpans($html);
         $this->removeFonts($html);
+        $this->moveImagesOutsideParagraphs($html);
         $this->removeEmptyParagraphs($html);
         $this->removeEmptyLinks($html);
         $this->footnotes($html);
@@ -204,6 +205,27 @@ class OdtHtmlNormalizer extends HtmlNormalizer
             if (!$found) {
                 break;
             }
+        }
+    }
+
+    /**
+     * @param SimpleXMLElement $html
+     */
+    private function moveImagesOutsideParagraphs(SimpleXMLElement $html)
+    {
+        $dom = dom_import_simplexml($html);
+        $images = $dom->getElementsByTagName('img');
+        foreach ($images as $img) {
+            /** @var $img DOMElement */
+            $parent = $img->parentNode;
+            $newImage = clone $img;
+            $img->parentNode->removeChild($img);
+            $newImage->removeAttribute('border');
+            $newImage->removeAttribute('name');
+            $newImage->removeAttribute('align');
+            $newImage->removeAttribute('width');
+            $newImage->removeAttribute('height');
+            $parent->parentNode->insertBefore($newImage, $parent);
         }
     }
 

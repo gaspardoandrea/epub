@@ -30,7 +30,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */ /** @noinspection PhpUndefinedFieldInspection */
+ */
+/** @noinspection PhpUndefinedFieldInspection */
 
 namespace Andreag\Epub\Model;
 
@@ -97,7 +98,6 @@ class HtmlNormalizer
         $this->tableToH1($html);
         $this->simplifyH1Divs($html);
         $html = $this->simplifyDivs($html);
-        $html = $this->moveImgOutside($html);
         $html = $this->removeEmptyDiv($html);
         $html = $this->replaceItalic($html);
         $html = $this->replaceBold($html);
@@ -173,6 +173,8 @@ class HtmlNormalizer
             'wrap' => 200
         ];
         $tidy->parseString($html->asXML(), $config, 'utf8');
+
+        $tidy = $this->postProcess((string)$tidy);
 
         file_put_contents($this->outputFile, (string)$tidy);
     }
@@ -320,19 +322,6 @@ class HtmlNormalizer
         return simplexml_import_dom($dom);
     }
 
-    private function moveImgOutside(SimpleXMLElement $html)
-    {
-        $dom = dom_import_simplexml($html);
-        $xpath = new DOMXPath($dom->ownerDocument);
-        $textNodes = $xpath->query('//text()');
-        foreach ($textNodes as $textNode) {
-            /** @var DOMText $textNode */
-            $textNode->textContent = str_replace('ù', '§', $textNode->textContent);
-        }
-
-        return simplexml_import_dom($dom);
-    }
-
     /**
      * Replace italic.
      *
@@ -409,5 +398,29 @@ class HtmlNormalizer
         }
 
         return simplexml_import_dom($dom);
+    }
+
+    /**
+     * Reduce li.
+     *
+     * @param array $liHtml
+     *
+     * @return string
+     */
+    public function reduceLi(array $liHtml): string
+    {
+        return sprintf("\n      <li>%s</li>", ucfirst(trim($liHtml[1])));
+    }
+
+    /**
+     * Post process.
+     *
+     * @param string $html
+     *
+     * @return string
+     */
+    private function postProcess(string $html): string
+    {
+        return preg_replace_callback('|\s*<li>\s*\n\s*<p>\n(.*)\n\s*</p>\n\s*</li>|', [$this, 'reduceLi'], $html);
     }
 }
