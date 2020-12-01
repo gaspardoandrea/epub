@@ -409,7 +409,7 @@ class HtmlNormalizer
      */
     public function reduceLi(array $liHtml): string
     {
-        return sprintf("\n      <li>%s</li>", ucfirst(trim($liHtml[1])));
+        return sprintf("\n      <li>%s", ucfirst(trim($liHtml[1])));
     }
 
     /**
@@ -421,6 +421,9 @@ class HtmlNormalizer
      */
     private function postProcess(string $html): string
     {
-        return preg_replace_callback('|\s*<li>\s*\n\s*<p>\n(.*)\n\s*</p>\n\s*</li>|', [$this, 'reduceLi'], $html);
+        $rv = preg_replace_callback('|\s*<li>\s*\n\s*<p>\n(.*)\n\s*</p>\n\s*|',
+            [$this, 'reduceLi'], $html);
+
+        return $rv;
     }
 }
