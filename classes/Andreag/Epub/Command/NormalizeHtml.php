@@ -39,7 +39,7 @@ class NormalizeHtml extends Command
     const OUTPUT = 'output';
 
     /** @var string */
-    protected $defaultName = 'epub:normalize-html';
+    protected static $defaultName = 'epub:normalize-html';
 
     /**
      * New instance.

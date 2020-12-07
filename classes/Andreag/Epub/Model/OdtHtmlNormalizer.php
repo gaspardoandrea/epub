@@ -286,7 +286,7 @@ class OdtHtmlNormalizer extends HtmlNormalizer
         $head->getElementsByTagName('title')->item(0)->removeAttribute(' xml:lang');
         $link = $dom->ownerDocument->createElement('link');
         $link->setAttribute('rel', 'stylesheet');
-        $link->setAttribute('href', '../Styles/Style0001.css');
+        $link->setAttribute('href', '../Styles/stylesheet.css');
         $link->setAttribute('type', 'text/css');
         $head->appendChild($link);
         foreach ($dom->getElementsByTagName('a') as $a) {

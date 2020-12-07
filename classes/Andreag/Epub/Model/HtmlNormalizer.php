@@ -161,7 +161,6 @@ class HtmlNormalizer
 
         /** @noinspection PhpToStringImplementationInspection */
         $tidy = $this->postProcess((string)$tidy);
-
         file_put_contents($this->outputFile, (string)$tidy);
     }
 
@@ -407,8 +406,18 @@ class HtmlNormalizer
      */
     private function postProcess(string $html): string
     {
-        $rv = preg_replace_callback('|\s*<li>\s*\n\s*<p>\n(.*)\n\s*</p>\n\s*|',
+        $rv = preg_replace_callback('|\s*<li>\s*\r?\n\s*<p>\r?\n(.*)\r?\n\s*</p>\r?\n\s*|',
             [$this, 'reduceLi'], $html);
+        $rv = str_replace('&nbsp; ', ' ', $rv);
+        $rv = str_replace('<hr>', '<hr/>', $rv);
+        $rv = str_replace('css">', "css\"/>
+  </head>
+  <body>", $rv);
+        $rv = preg_replace('|<img src="([^"]+)">|', '<img src="../Images/\1"/>', $rv);
+        $rv = str_replace("    <title></title>
+  </head>
+  <body>
+", '', $rv);
 
         return $rv;
     }
